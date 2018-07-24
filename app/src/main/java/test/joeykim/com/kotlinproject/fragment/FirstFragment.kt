@@ -9,11 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.fragment_first.*
 import org.json.JSONObject
 import test.joeykim.com.kotlinproject.R
 import test.joeykim.com.kotlinproject.adapter.ItemAdapter
+import test.joeykim.com.kotlinproject.common.Utils
 import test.joeykim.com.kotlinproject.model.*
 import test.joeykim.com.kotlinproject.model.APIReqData.DataRequest
 import test.joeykim.com.kotlinproject.model.APIReqData.CommonRequest
@@ -81,7 +83,7 @@ class FirstFragment : Fragment(){
             val params = JSONObject(gsonStr)
             */
 
-            callApi("http://192.168.18.70:8080/ocr/rest/oauth/token","initLogin")
+            callApi("http://211.45.65.186:8080/ocr/rest/oauth/token","initLogin")
 
             return view1
         //}
@@ -93,12 +95,34 @@ class FirstFragment : Fragment(){
     fun callApi(str: String, typ: String){
         val headers = HashMap<String, String>()
         headers.put("Accept", "application/json")
-        headers.put("Authorization", "Bearer "+ "46e0ce09-6987-4895-a8bb-24af2eb471e1")
+        headers.put("Content-Type", "application/json")
+        val bodyObject= JSONObject()
+        if(typ.equals("initLogin")){
 
-        apiController?.post(str,null, headers) { response, error ->
+            var util = Utils()
+            var base64key = util.encodeString("my-trusted-client:secret")
+            headers.put("Authorization", "Basic "+ base64key)
+            bodyObject.put("grant_type","password")
+            bodyObject.put("username","uuid")
+            bodyObject.put("password","")
+        }else if(typ.equals("refreshToken")){
+            headers.put("Authorization", "Basic "+ "security_code")
+            bodyObject.put("grant_type","refresh_token")
+            bodyObject.put("refresh_token","aaaaaaa")
+        }else{
+            headers.put("Authorization", "Bearer "+ "46e0ce09-6987-4895-a8bb-24af2eb471e1")
+        }
+
+
+        apiController?.post(str,bodyObject, headers) { response, error ->
             Log.d("TEST", "$response $error")
             if(error != null){
-                Log.d("${error.networkResponse.statusCode}","$error")
+                if(error.networkResponse.statusCode == 401){
+                    callApi("http://211.45.65.186:8080/ocr/rest/oauth/token", "refreshToken")
+                }else{
+
+                }
+                //Log.d("${error.networkResponse.statusCode}","$error")
             }else{
                 val gson = Gson()
                 val parser = JsonParser()

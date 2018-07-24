@@ -6,7 +6,12 @@ import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.VolleyLog
 import com.android.volley.toolbox.JsonObjectRequest
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import org.json.JSONObject
+import org.json.JSONException
+import java.io.UnsupportedEncodingException
+
 
 class ServiceVolley: ServiceInterface {
     val TAG = ServiceVolley::class.java.simpleName
@@ -22,6 +27,16 @@ class ServiceVolley: ServiceInterface {
                     VolleyLog.e(TAG, "/post request fail! Error: ${error.message}")
                     completionHandler(null, error)
                 }) {
+
+            /*
+            @Throws(AuthFailureError::class)
+            override fun getParams(): MutableMap<String, String> {
+                val gson = Gson()
+                var param: HashMap<String, String> = gson.fromJson(params.toString(), object : TypeToken<Map<String, Any>>() {}.type)
+
+                return super.getParams()
+            }
+            */
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String> {
                 if(header == null){
@@ -34,6 +49,28 @@ class ServiceVolley: ServiceInterface {
                     return header
                 }
 
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getBody(): ByteArray? {
+
+                var body: String? = null
+                try {
+
+                    body = params.toString()
+                } catch (e: JSONException) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace()
+                }
+
+                try {
+                    return body!!.toString().toByteArray(charset("utf-8"))
+                } catch (e: UnsupportedEncodingException) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace()
+                }
+
+                return null
             }
 
         }
