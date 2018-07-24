@@ -33,7 +33,7 @@ class SecondFragment : Fragment(){
         mContext = this
 
 
-        //git Test
+        //git Test1
         //var customWeb1 = CustomWebView(null, mContext)
         //customWeb1.initView(web1!!)
         //customWeb1.LoadUrl("https://m.daum.net", null)
