@@ -81,11 +81,33 @@ class FirstFragment : Fragment(){
             val params = JSONObject(gsonStr)
             */
 
-            searchNaver("건강")
+            callApi("http://192.168.18.70:8080/ocr/rest/oauth/token","initLogin")
 
             return view1
         //}
     }
+
+    /**
+     * open Api Call
+     */
+    fun callApi(str: String, typ: String){
+        val headers = HashMap<String, String>()
+        headers.put("Accept", "application/json")
+        headers.put("Authorization", "Bearer "+ "46e0ce09-6987-4895-a8bb-24af2eb471e1")
+
+        apiController?.post(str,null, headers) { response, error ->
+            Log.d("TEST", "$response $error")
+            if(error != null){
+                Log.d("${error.networkResponse.statusCode}","$error")
+            }else{
+                val gson = Gson()
+                val parser = JsonParser()
+                val rootObj = parser.parse(response.toString())
+            }
+
+        }
+    }
+
 
     fun searchNaver(str: String){
         var encodeStr = URLEncoder.encode(str, "UTF-8");

@@ -3,6 +3,7 @@ package test.joeykim.com.kotlinproject.network
 import android.util.Log
 import com.android.volley.AuthFailureError
 import com.android.volley.Response
+import com.android.volley.VolleyError
 import com.android.volley.VolleyLog
 import com.android.volley.toolbox.JsonObjectRequest
 import org.json.JSONObject
@@ -11,15 +12,15 @@ class ServiceVolley: ServiceInterface {
     val TAG = ServiceVolley::class.java.simpleName
     val basePath = ""
 
-    override fun post(path: String, params: JSONObject?, header:HashMap<String,String>?, completionHandler: (response: JSONObject?) -> Unit) {
+    override fun post(path: String, params: JSONObject?, header:HashMap<String,String>?, completionHandler: (response: JSONObject?, error:VolleyError?) -> Unit) {
         val jsonObjReq = object : JsonObjectRequest(Method.POST, basePath + path, params,
                 Response.Listener<JSONObject> { response ->
                     Log.d(TAG, "/post request OK! Response: $response")
-                    completionHandler(response)
+                    completionHandler(response, null)
                 },
                 Response.ErrorListener { error ->
                     VolleyLog.e(TAG, "/post request fail! Error: ${error.message}")
-                    completionHandler(null)
+                    completionHandler(null, error)
                 }) {
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String> {
