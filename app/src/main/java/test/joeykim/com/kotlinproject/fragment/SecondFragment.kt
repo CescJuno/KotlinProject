@@ -32,6 +32,8 @@ class SecondFragment : Fragment(){
         web1 = view_first?.findViewById(R.id.web1)
         mContext = this
 
+
+        //git Test
         //var customWeb1 = CustomWebView(null, mContext)
         //customWeb1.initView(web1!!)
         //customWeb1.LoadUrl("https://m.daum.net", null)
