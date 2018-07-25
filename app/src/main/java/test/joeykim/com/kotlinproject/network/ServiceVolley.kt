@@ -34,16 +34,6 @@ class ServiceVolley: ServiceInterface {
 
             @Throws(AuthFailureError::class)
             override fun getParams(): HashMap<String, String>? {
-                /*
-                val params = HashMap<String, String>()
-                params["grant_type"] = "password"
-                params["username"] = "uuid1"
-                params["password"] = ""
-                */
-                //val gson = Gson()
-                //var param: HashMap<String, String> = gson.fromJson(params.toString(), object : TypeToken<HashMap<String, String>>() {}.type)
-                //val map:HashMap<String, String> = Gson().fromJson(params.toString(), object : TypeToken<HashMap<String, String>>() {}.type)
-
                 return params
             }
 

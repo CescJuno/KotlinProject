@@ -96,7 +96,7 @@ class FirstFragment : Fragment(){
         val headers = HashMap<String, String>()
         headers.put("Accept", "application/json")
         val bodyObject= HashMap<String,String>()
-        val bodyObject1= JSONObject()
+        var bodyObject1= JSONObject()
         if(typ.equals("initLogin")){
 
             var util = Utils()
@@ -112,6 +112,22 @@ class FirstFragment : Fragment(){
             bodyObject.put("refresh_token","aaaaaaa")
         }else{
             headers.put("Authorization", "Bearer "+ "46e0ce09-6987-4895-a8bb-24af2eb471e1")
+            val commonReq = CommonRequest()
+            commonReq.trxId = "111"
+            commonReq.image = "bbb"
+            commonReq.description = "ccc"
+            commonReq.name = "ddddd"
+
+            var dataReq = DataRequest()
+            dataReq.speaker = "mijin"
+            dataReq.speed = "0"
+            dataReq.text = "안녕하세요"
+
+            var apiReq = APIReqData(common = commonReq, data = dataReq)
+
+            val gson = Gson()
+            val gsonStr = gson.toJson(apiReq.data)
+            bodyObject1 = JSONObject(gsonStr)
         }
 
         if(typ.equals("initLogin") || typ.equals("refreshToken")) {
