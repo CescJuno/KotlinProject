@@ -95,13 +95,14 @@ class FirstFragment : Fragment(){
     fun callApi(str: String, typ: String){
         val headers = HashMap<String, String>()
         headers.put("Accept", "application/json")
-        headers.put("Content-Type", "application/json")
-        val bodyObject= JSONObject()
+        val bodyObject= HashMap<String,String>()
+        val bodyObject1= JSONObject()
         if(typ.equals("initLogin")){
 
             var util = Utils()
             var base64key = util.encodeString("my-trusted-client:secret")
             headers.put("Authorization", "Basic "+ base64key)
+            headers.put("Content-Type", "application/x-www-form-urlencoded")
             bodyObject.put("grant_type","password")
             bodyObject.put("username","uuid")
             bodyObject.put("password","")
@@ -113,22 +114,40 @@ class FirstFragment : Fragment(){
             headers.put("Authorization", "Bearer "+ "46e0ce09-6987-4895-a8bb-24af2eb471e1")
         }
 
+        if(typ.equals("initLogin") || typ.equals("refreshToken")) {
+            apiController?.post1(str, bodyObject, headers) { response, error ->
+                Log.d("TEST", "$response $error")
+                if (error != null) {
+                    if (error.networkResponse.statusCode == 401) {
+                        callApi("http://211.45.65.186:8080/ocr/rest/oauth/token", "refreshToken")
+                    } else {
 
-        apiController?.post(str,bodyObject, headers) { response, error ->
-            Log.d("TEST", "$response $error")
-            if(error != null){
-                if(error.networkResponse.statusCode == 401){
-                    callApi("http://211.45.65.186:8080/ocr/rest/oauth/token", "refreshToken")
-                }else{
-
+                    }
+                    //Log.d("${error.networkResponse.statusCode}","$error")
+                } else {
+                    val gson = Gson()
+                    val parser = JsonParser()
+                    val rootObj = parser.parse(response.toString())
                 }
-                //Log.d("${error.networkResponse.statusCode}","$error")
-            }else{
-                val gson = Gson()
-                val parser = JsonParser()
-                val rootObj = parser.parse(response.toString())
-            }
 
+            }
+        }else{
+            apiController?.post(str, bodyObject1, headers) { response, error ->
+                Log.d("TEST", "$response $error")
+                if (error != null) {
+                    if (error.networkResponse.statusCode == 401) {
+                        callApi("http://211.45.65.186:8080/ocr/rest/oauth/token", "refreshToken")
+                    } else {
+
+                    }
+                    //Log.d("${error.networkResponse.statusCode}","$error")
+                } else {
+                    val gson = Gson()
+                    val parser = JsonParser()
+                    val rootObj = parser.parse(response.toString())
+                }
+
+            }
         }
     }
 
