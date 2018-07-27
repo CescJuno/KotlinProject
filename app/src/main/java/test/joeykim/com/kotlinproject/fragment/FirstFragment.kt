@@ -102,12 +102,13 @@ class FirstFragment : Fragment(){
             var util = Utils()
             var base64key = util.encodeString("my-trusted-client:secret")
             headers.put("Authorization", "Basic "+ base64key)
-            headers.put("Content-Type", "application/x-www-form-urlencoded")
             bodyObject.put("grant_type","password")
             bodyObject.put("username","uuid")
             bodyObject.put("password","")
         }else if(typ.equals("refreshToken")){
-            headers.put("Authorization", "Basic "+ "security_code")
+            var util = Utils()
+            var base64key = util.encodeString("my-trusted-client:secret")
+            headers.put("Authorization", "Basic "+ base64key)
             bodyObject.put("grant_type","refresh_token")
             bodyObject.put("refresh_token","aaaaaaa")
         }else{
